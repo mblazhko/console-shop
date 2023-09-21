@@ -13,8 +13,8 @@ PRODUCT_NOT_FOUND = HTTPException(
 
 
 @router.get("/products/", response_model=list[schemas.Product])
-async def read_product(db: Session = Depends(get_db)):
-    return await crud.get_all_products(db=db)
+def read_product(db: Session = Depends(get_db)):
+    return crud.get_all_products(db=db)
 
 
 @router.get("/products/{product_id}", response_model=schemas.Product)
@@ -25,7 +25,7 @@ def read_single_product(product_id: int, db: Session = Depends(get_db)):
     return product
 
 
-@router.post("/products/", response_model=schemas.Product)
+@router.post("/products/", response_model=schemas.ProductCreate)
 def create_product(
     product: schemas.ProductCreate, db: Session = Depends(get_db)
 ):
