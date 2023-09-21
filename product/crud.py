@@ -50,11 +50,11 @@ def update_product(
     db.commit()
 
     if result.rowcount > 0:
-        updated_city = {
+        updated_product = {
             "id": product_id,
             **product.model_dump(),
         }
-        return updated_city
+        return updated_product
     else:
         return {}
 
