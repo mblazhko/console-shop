@@ -13,7 +13,7 @@ class ProductBase(BaseModel):
     daily_fee: float
 
 
-class ProductCreate(BaseModel):
+class ProductCreate(ProductBase):
     pass
 
 
