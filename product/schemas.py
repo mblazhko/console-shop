@@ -1,3 +1,5 @@
+import decimal
+
 from pydantic import BaseModel
 from enum import Enum
 
@@ -10,7 +12,7 @@ class ProductType(str, Enum):
 class ProductBase(BaseModel):
     name: str
     type: ProductType
-    daily_fee: float
+    daily_fee: decimal.Decimal
 
 
 class ProductCreate(ProductBase):
