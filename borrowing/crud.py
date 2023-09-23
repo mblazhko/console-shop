@@ -6,8 +6,10 @@ from borrowing import models, schemas
 from product import models as product_models
 
 
-def get_all_borrowings(db: Session):
-    query = select(models.DBBorrowing)
+def get_all_borrowings(db: Session, user_id: int, is_active: bool = None):
+    query = select(models.DBBorrowing).where(
+        models.DBBorrowing.user_id == user_id
+    )
     borrowing_list = db.execute(query)
 
     return [borrowing[0] for borrowing in borrowing_list.fetchall()]
