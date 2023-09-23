@@ -1,6 +1,6 @@
 import decimal
 
-from pydantic import BaseModel
+from pydantic import BaseModel, PositiveInt
 from enum import Enum
 
 
@@ -13,6 +13,7 @@ class ProductBase(BaseModel):
     name: str
     type: ProductType
     daily_fee: decimal.Decimal
+    inventory: PositiveInt
 
 
 class ProductCreate(ProductBase):

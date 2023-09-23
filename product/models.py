@@ -13,3 +13,4 @@ class DBProduct(Base):
     name = Column(String(255), nullable=False)
     type = Column(String(511), nullable=False)
     daily_fee = Column(Numeric(precision=10, scale=2), nullable=True)
+    inventory = Column(Integer, nullable=False)
