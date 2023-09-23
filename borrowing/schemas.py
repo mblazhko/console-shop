@@ -5,7 +5,6 @@ from pydantic import BaseModel, field_validator
 
 class BorrowingBase(BaseModel):
     product_id: int
-    payment_id: int
     user_id: int
     borrow_date: datetime.datetime
     expected_return_date: datetime.datetime

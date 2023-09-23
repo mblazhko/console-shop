@@ -11,7 +11,6 @@ class DBBorrowing(Base):
         index=True,
     )
     product_id = Column(Integer, nullable=False)
-    payment_id = Column(Integer, nullable=False)
     user_id = Column(Integer, nullable=False)
     borrow_date = Column(DateTime, server_default=func.now(), nullable=False)
     expected_return_date = Column(DateTime, nullable=False)
