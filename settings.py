@@ -11,6 +11,8 @@ class Settings(BaseSettings):
 
     DATABASE_URL: str | None = os.getenv("DATABASE_URL")
 
+    SECRET: str | None = os.getenv("SECRET")
+
     class Config:
         case_sensitive = True
         env_file = ".env"
