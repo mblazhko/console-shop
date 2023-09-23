@@ -43,3 +43,11 @@ class BorrowingBase(BaseModel):
             raise ValueError(
                 "Actual return date must be greater than or equal to borrow date"
             )
+
+
+class BorrowingCreate(BorrowingBase):
+    pass
+
+
+class Borrowing(BorrowingBase):
+    id: int
