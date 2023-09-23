@@ -7,7 +7,6 @@ from alembic import context
 
 from product.models import DBProduct
 from borrowing.models import DBBorrowing
-from user.models import DBUser
 
 from database import Base
 
