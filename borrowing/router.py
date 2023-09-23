@@ -1,5 +1,5 @@
 from fastapi import APIRouter, Depends, HTTPException, status
-from sqlalchemy.orm import Session
+from sqlalchemy.ext.asyncio import AsyncSession
 
 from dependencies import get_db
 from borrowing import crud, schemas
@@ -13,29 +13,29 @@ BORROWING_NOT_FOUND = HTTPException(
 
 
 @router.get("/borrowings/", response_model=list[schemas.Borrowing])
-def read_product(db: Session = Depends(get_db)):
-    return crud.get_all_borrowings(db=db)
+async def read_product(user_id: int, db: AsyncSession = Depends(get_db)):
+    return await crud.get_all_borrowings(db=db, user_id=user_id)
 
 
 @router.get("/borrowings/{borrowing_id}", response_model=schemas.Borrowing)
-def read_single_borrowing(borrowing_id: int, db: Session = Depends(get_db)):
-    borrowing = crud.get_single_borrowing(borrowing_id=borrowing_id, db=db)
+async def read_single_borrowing(borrowing_id: int, db: AsyncSession = Depends(get_db)):
+    borrowing = await crud.get_single_borrowing(borrowing_id=borrowing_id, db=db)
     if borrowing is None:
         return BORROWING_NOT_FOUND
     return borrowing
 
 
 @router.post("/borrowings/", response_model=schemas.BorrowingCreate)
-def create_borrowing(
+async def create_borrowing(
         borrowing: schemas.BorrowingCreate,
-        db: Session = Depends(get_db)
+        db: AsyncSession = Depends(get_db)
 ):
-    return crud.create_borrowing(borrowing=borrowing, db=db)
+    return await crud.create_borrowing(borrowing=borrowing, db=db)
 
 
 @router.get("/borrowings/{borrowing_id}/return-borrowing", response_model=schemas.Borrowing)
-def return_borrowing(borrowing_id: int, db: Session = Depends(get_db)):
-    return crud.return_borrowing(borrowing_id=borrowing_id, db=db)
+async def return_borrowing(borrowing_id: int, db: AsyncSession = Depends(get_db)):
+    return await crud.return_borrowing(borrowing_id=borrowing_id, db=db)
 
 
 

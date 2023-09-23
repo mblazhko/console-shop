@@ -37,6 +37,7 @@ app.include_router(
 app.include_router(product_router.router)
 app.include_router(borrowing_router.router)
 
+
 @app.get("/")
 async def root():
     return {"message": "Welcome to ConsoleShop"}

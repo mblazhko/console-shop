@@ -1,21 +1,22 @@
 from typing import Dict, Any
 
 from sqlalchemy import select, insert, delete, update
-from sqlalchemy.orm import Session
+
+from sqlalchemy.ext.asyncio import AsyncSession
 
 from product import models, schemas
 
 
-def get_all_products(db: Session):
+async def get_all_products(db: AsyncSession):
     query = select(models.DBProduct)
-    cities_list = db.execute(query)
+    cities_list = await db.execute(query)
 
     return [city[0] for city in cities_list.fetchall()]
 
 
-def get_single_product(db: Session, product_id: int):
+async def get_single_product(db: AsyncSession, product_id: int):
     query = select(models.DBProduct).where(models.DBProduct.id == product_id)
-    result = db.execute(query)
+    result = await db.execute(query)
     product = result.fetchone()
 
     if product is None:
@@ -24,18 +25,18 @@ def get_single_product(db: Session, product_id: int):
     return product[0]
 
 
-def create_product(db: Session, product: schemas.ProductCreate):
+async def create_product(db: AsyncSession, product: schemas.ProductCreate):
     query = insert(models.DBProduct).values(
         name=product.name, type=product.type, daily_fee=product.daily_fee
     )
-    result = db.execute(query)
-    db.commit()
+    result = await db.execute(query)
+    await db.commit()
     resp = {**product.model_dump(), "id": result.lastrowid}
     return resp
 
 
-def update_product(
-    db: Session, product_id: int, product: schemas.ProductCreate
+async def update_product(
+    db: AsyncSession, product_id: int, product: schemas.ProductCreate
 ) -> Dict[str, Any]:
     query = (
         update(models.DBProduct)
@@ -46,8 +47,8 @@ def update_product(
             daily_fee=product.daily_fee
         )
     )
-    result = db.execute(query)
-    db.commit()
+    result = await db.execute(query)
+    await db.commit()
 
     if result.rowcount > 0:
         updated_product = {
@@ -59,8 +60,8 @@ def update_product(
         return {}
 
 
-def delete_product(db: Session, product_id: int):
+async def delete_product(db: AsyncSession, product_id: int):
     query = delete(models.DBProduct).where(models.DBProduct.id == product_id)
-    result = db.execute(query)
-    db.commit()
+    result = await db.execute(query)
+    await db.commit()
     return result.rowcount > 0

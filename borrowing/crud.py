@@ -1,23 +1,22 @@
 from fastapi import HTTPException
 from sqlalchemy import select, insert, func
-from sqlalchemy.orm import Session
-
+from sqlalchemy.ext.asyncio import AsyncSession
 from borrowing import models, schemas
 from product import models as product_models
 
 
-def get_all_borrowings(db: Session, user_id: int, is_active: bool = None):
+async def get_all_borrowings(db: AsyncSession, user_id: int, is_active: bool = None):
     query = select(models.DBBorrowing).where(
         models.DBBorrowing.user_id == user_id
     )
-    borrowing_list = db.execute(query)
+    borrowing_list = await db.execute(query)
 
     return [borrowing[0] for borrowing in borrowing_list.fetchall()]
 
 
-def get_single_borrowing(db: Session, borrowing_id: int):
+async def get_single_borrowing(db: AsyncSession, borrowing_id: int):
     query = select(models.DBBorrowing).where(models.DBBorrowing.id == borrowing_id)
-    result = db.execute(query)
+    result = await db.execute(query)
     borrowing = result.fetchone()
 
     if borrowing is None:
@@ -26,7 +25,7 @@ def get_single_borrowing(db: Session, borrowing_id: int):
     return borrowing[0]
 
 
-def create_borrowing(db: Session, borrowing: schemas.BorrowingCreate):
+async def create_borrowing(db: AsyncSession, borrowing: schemas.BorrowingCreate):
     product = db.query(product_models.DBProduct).filter(
         product_models.DBProduct.id == borrowing.product_id
     ).first()
@@ -46,23 +45,23 @@ def create_borrowing(db: Session, borrowing: schemas.BorrowingCreate):
             actual_return_date=borrowing.actual_return_date,
             is_active=borrowing.is_active
         )
-        result = db.execute(query)
+        result = await db.execute(query)
         product.inventory -= 1
-        db.commit()
+        await db.commit()
         resp = {**borrowing.model_dump(), "id": result.lastrowid}
         return resp
     else:
         raise HTTPException(status_code=404, detail="Product not found")
 
 
-def return_borrowing(db: Session, borrowing_id: int):
+async def return_borrowing(db: AsyncSession, borrowing_id: int):
     borrowing = db.query(models.DBBorrowing).filter(
         models.DBBorrowing.id == borrowing_id
     ).first()
     if borrowing.is_active:
         borrowing.is_active = False
         borrowing.actual_return_date = func.now()
-        db.commit()
+        await db.commit()
         return {"message": "Borrowing is successfully returned"}
     else:
         return {"message": "Borrowing is already returned"}
