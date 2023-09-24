@@ -9,9 +9,9 @@ from product import models, schemas
 
 async def get_all_products(db: AsyncSession):
     query = select(models.DBProduct)
-    cities_list = await db.execute(query)
+    product_list = await db.execute(query)
 
-    return [city[0] for city in cities_list.fetchall()]
+    return [product[0] for product in product_list.fetchall()]
 
 
 async def get_single_product(db: AsyncSession, product_id: int):
@@ -27,7 +27,10 @@ async def get_single_product(db: AsyncSession, product_id: int):
 
 async def create_product(db: AsyncSession, product: schemas.ProductCreate):
     query = insert(models.DBProduct).values(
-        name=product.name, type=product.type, daily_fee=product.daily_fee
+        name=product.name,
+        type=product.type,
+        daily_fee=product.daily_fee,
+        inventory=product.inventory
     )
     result = await db.execute(query)
     await db.commit()
