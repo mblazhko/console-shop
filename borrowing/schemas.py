@@ -18,6 +18,7 @@ class BorrowingBase(BaseModel):
             raise ValueError(
                 "Borrow date must be less than or equal to expected return date"
             )
+        return values
 
     @field_validator("borrow_date", "actual_return_date")
     @classmethod
@@ -26,6 +27,7 @@ class BorrowingBase(BaseModel):
             raise ValueError(
                 "Borrow date must be less than or equal to actual return date"
             )
+        return values
 
     @field_validator("expected_return_date", "borrow_date")
     @classmethod
@@ -34,6 +36,7 @@ class BorrowingBase(BaseModel):
             raise ValueError(
                 "Expected return date must be greater than or equal to borrow date"
             )
+        return values
 
     @field_validator("actual_return_date", "borrow_date")
     @classmethod
@@ -42,6 +45,7 @@ class BorrowingBase(BaseModel):
             raise ValueError(
                 "Actual return date must be greater than or equal to borrow date"
             )
+        return values
 
 
 class BorrowingCreate(BorrowingBase):
